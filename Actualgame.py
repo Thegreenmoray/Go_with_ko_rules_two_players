@@ -40,9 +40,9 @@ def startgui():
 
 
 
-def editboard(board):
-    for i in board:
-        for j in board[i]:
+#def editboard(board):
+  #  for i in board:
+   #     for j in board[i]:
      #label blackstone    if board[i][j] == 'X' else label whitestone if board == 'O' else done
 
 
