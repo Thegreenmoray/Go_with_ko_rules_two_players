@@ -4,10 +4,3 @@ def createboard(size=19):
 
 
 
-def boardsize(selection):
-    match selection:
-        case 0: return createboard(9)
-        case 1: return createboard(13)
-    return createboard()
-
-
