@@ -1,0 +1,30 @@
+name: Build
+
+on:
+  push:
+    branches: [ master, flask ]
+  pull_request:
+    branches: [ master, flask ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v6
+        with:
+         python-version: '3.13'
+
+      - name: Verify Python
+        run: python --version
+
+      - name: Build Docker image
+        run: docker build -t gogame .
+
+
+
+
+
+
