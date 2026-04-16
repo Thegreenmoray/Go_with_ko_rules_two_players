@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [ flask , master ]
+    branches: [ master, flask ]
   pull_request:
-    branches: [ flask ,master]
+    branches: [ master, flask ]
 
 jobs:
   build:
