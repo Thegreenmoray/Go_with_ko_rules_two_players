@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Go with Ko Rules</title>
+</head>
+<body>
+
+<p>This is a paragraph.</p>
+<!--man, I really need to learn js-->
+<!--<div style="width: 300px; height: 300px; background-color: #F0D095;"></div>-->
+<canvas id="go-board" width="520" height="520" style="background-color: #F0D095;"></canvas>
+<script>
+    const canvas = document.getElementById('go-board');
+    const ctx = canvas.getContext('2d');
+    const size = 19;  // 19x19 board
+    const margin = 30;
+    const cellSize = (canvas.width - 2 * margin) / (size - 1);
+
+    // Draw grid lines
+    function drawBoard() {
+        for (let i = 0; i < size; i++) {
+            ctx.beginPath();
+            // Vertical lines
+            ctx.moveTo(margin + i * cellSize, margin);
+            ctx.lineTo(margin + i * cellSize, canvas.height - margin);
+            // Horizontal lines
+            ctx.moveTo(margin, margin + i * cellSize);
+            ctx.lineTo(canvas.width - margin, margin + i * cellSize);
+            ctx.stroke();
+        }
+
+        // Draw star points (hoshii)
+        const starPoints = [3, 9, 15];  // for 19x19
+        for (let i of starPoints) {
+            for (let j of starPoints) {
+                if ((i === 3 || i === 15) && (j === 3 || j === 15)) continue;
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(margin + i * cellSize, margin + j * cellSize, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+    }
+drawBoard();
+    // Handle clicks
+    canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        let x = (e.clientX - rect.left) * scaleX;
+        let y = (e.clientY - rect.top) * scaleY;
+
+        const row = Math.round((y - margin) / cellSize);
+        const col = Math.round((x - margin) / cellSize);
+
+        if (row >= 0 && row < size && col >= 0 && col < size) {
+            // Send move to Flask
+            fetch('/move', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({row: row, col: col})
+            })
+            .then(response => response.json())
+            .then(data => {
+                drawStone(row, col, data.color);  // Draw stone
+                updateTurn(data.next_player);
+            });
+        }
+    });
+
+    function drawStone(row, col, color) {
+        const x = margin + col * cellSize;
+        const y = margin + row * cellSize;
+        const radius = cellSize * 0.4;
+
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        ctx.fillStyle = color === 'X' ? 'black' : 'white';
+        ctx.fill();
+        ctx.strokeStyle = '#333';
+        ctx.stroke();
+    }
+</script>
+
+
+</body>
+</html>
