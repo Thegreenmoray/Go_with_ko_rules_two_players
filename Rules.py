@@ -1,3 +1,5 @@
+#put this after is surrounding
+#tested
 import copy
 
 
@@ -69,24 +71,23 @@ def dfs(board,x,y,visitboard,player_color,oppisttisecolor,isinfactsurrounded,cap
 
 
  return isinfactsurrounded,captured_positions
-
-
+#tested
 def is_out_of_bounds(board,x,y):
     return x>=len(board) or y>=len(board) or x<0 or y<0
-
-
+#tested
 def ko_check(board,prevoiusboard):
 
- for i in board:
-     for j in board[i]:
+ for i in range(len(board)):
+     for j in range(len(board[i])):
       if board[i][j] != prevoiusboard[i][j]:
        return False #is not a duplicate of the prevoius board
 
  #note: check this for only single captures, ko doesn't apply when two or more are captured
  return True
-
+#tested
 def copy_board(board):
     return board
+
 
 def iscapturing(board, x, y, player_color, oppisttisecolor, board_size=19):
     visitboard = [[False for _ in range(board_size)] for _ in range(board_size)]
@@ -102,3 +103,4 @@ def iscapturing(board, x, y, player_color, oppisttisecolor, board_size=19):
                 all_captured.extend(captured)
 
     return len(all_captured) > 0, all_captured
+
