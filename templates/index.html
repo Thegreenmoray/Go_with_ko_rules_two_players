@@ -6,8 +6,7 @@
 <body>
 
 <p>This is a paragraph.</p>
-<!--man, I really need to learn js-->
-<!--<div style="width: 300px; height: 300px; background-color: #F0D095;"></div>-->
+<div id="turn-indicator">Black's turn</div>
 <canvas id="go-board" width="520" height="520" style="background-color: #F0D095;"></canvas>
 <script>
     const canvas = document.getElementById('go-board');
@@ -41,6 +40,17 @@
             }
         }
     }
+    //remeber black goes first
+    let currentPlayer = 'X';  // X for black, O for white (or vice versa)
+
+function updateTurn(nextPlayer) {
+    currentPlayer = nextPlayer;
+    document.getElementById('turn-indicator').textContent =
+        currentPlayer === 'X' ? "Black's turn" : "White's turn";
+}
+
+
+
 drawBoard();
     // Handle clicks
     canvas.addEventListener('click', (e) => {
@@ -59,11 +69,11 @@ drawBoard();
             fetch('/move', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({row: row, col: col})
+                body: JSON.stringify({row: row, col: col, player: currentPlayer})
             })
             .then(response => response.json())
             .then(data => {
-                drawStone(row, col, data.color);  // Draw stone
+                drawStone(row, col, currentPlayer);  // Draw stone
                 updateTurn(data.next_player);
             });
         }
