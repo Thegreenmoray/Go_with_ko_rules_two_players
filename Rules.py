@@ -22,22 +22,22 @@ def countterritory(board):
                   case 'O':
                    white += points
                   case _:
-                   netural+= points
+                   netural += points
 
     return black,white,netural
 
 def bfs(board,x,y,visitboard):
     queue = Queue()
     queue.put((x,y))
-    points=0
-    whogetspoints=' ' #intially nobody
+    points=1
+    #whogetspoints=' ' #intially nobody
     bordering_players = set()  # Stores 'X', 'O', or both
     while not queue.empty():
      x,y=queue.get()
      directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
      for dx, dy in directions:
         nx, ny = x + dx, y + dy
-        if not is_out_of_bounds(board, nx, ny) and board[nx][ny] == ' ' and visitboard[nx][ny] == False:
+        if not is_out_of_bounds(board, nx, ny) and visitboard[nx][ny] == False:
             if board[nx][ny] == ' ':
              visitboard[nx][ny] = True
              queue.put((nx,ny))

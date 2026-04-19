@@ -131,22 +131,6 @@ document.getElementById('Tally').addEventListener('click', () => {
         alert(`Black (X): ${data.black}\nWhite (O): ${data.white}\nNeutral: ${data.neutral}`);
     });
 
-
-
-    fetch('/clearboard', {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'}
-    })
-    .then(response => response.json())
-    .then(data => {
-        updateBoard(data.board)
-    });
-
-
-
-
-
-
 });
 drawBoard();
     // Handle clicks

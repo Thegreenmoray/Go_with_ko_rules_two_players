@@ -41,7 +41,7 @@ def makemove():
     col = data.get('col')
     player = data.get('player')
     new_board,waslegal= Rules.whiteplace(board,row,col) if player=='O' else Rules.blackplace(board,row,col)
-    board = new_board
+    board=new_board
     return jsonify({ 'waslegal': waslegal ,
         'next_player': 'O' if player == 'X' else 'X' ,
                      'board': board })

@@ -67,6 +67,22 @@ class MyTestCase(unittest.TestCase):
         board[2][2] = 'X'
 
         self.assertEqual(board,testboard)
+    def test_countterritory(self):
+       # board = Go.createboard(4)
+
+       # board[2][0] = 'X'
+       # board[2][1] = 'X'
+       # board[2][2] = 'X'
+      #  board[2][3] = 'X'
+      #  black,white,netural = Rules.countterritory(board)
+      #  self.assertNotEqual(black,0)
+        board1 = Go.createboard(4)
+        board1[2][0] = 'X'
+        board1[2][2] = 'X'
+        board1[1][1] = 'X'
+        board1[3][1] = 'X'
+        black, white, netural = Rules.countterritory(board1)
+        self.assertNotEqual(black,0)
 
 
 if __name__ == '__main__':
