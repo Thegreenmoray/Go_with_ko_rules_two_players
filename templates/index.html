@@ -49,6 +49,24 @@ function updateTurn(nextPlayer) {
         currentPlayer === 'X' ? "Black's turn" : "White's turn";
 }
 
+function updateBoard(boardData) {
+    // Clear the entire canvas first
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Redraw the grid lines
+    drawBoard();  // Your existing function that draws lines and star points
+
+    // Loop through the board and draw all stones
+    for (let row = 0; row < boardData.length; row++) {
+        for (let col = 0; col < boardData[row].length; col++) {
+            if (boardData[row][col] === 'X') {
+                drawStone(row, col, 'X');
+            } else if (boardData[row][col] === 'O') {
+                drawStone(row, col, 'O');
+            }
+        }
+    }
+}
 
 
 drawBoard();
@@ -73,8 +91,13 @@ drawBoard();
             })
             .then(response => response.json())
             .then(data => {
-                drawStone(row, col, currentPlayer);  // Draw stone
-                updateTurn(data.next_player);
+                if (data.waslegal) {
+                     drawStone(row, col, currentPlayer);
+                     updateTurn(data.next_player);
+                     updateBoard(data.board);
+                      } else {
+                     alert("Illegal move!");
+}
             });
         }
     });

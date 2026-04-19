@@ -1,6 +1,61 @@
 #put this after is surrounding
 #tested
 import copy
+from queue import Queue
+
+
+def countterritory(board):
+    working_board = copy.deepcopy(board)
+    visitboard = [[False for _ in range(len(board))] for _ in range(len(board))]
+    black=0
+    white=0
+    netural=0
+
+
+    for x in range(len(working_board)):
+        for y in range(len(working_board[x])):
+            if working_board[x][y] == ' ' and visitboard[x][y] == False:
+              visitboard,points,whogetspoints = bfs(working_board,x,y,visitboard)
+              match whogetspoints:
+                  case 'X':
+                   black += points
+                  case 'O':
+                   white += points
+                  case _:
+                   netural+= points
+
+    return black,white,netural
+
+def bfs(board,x,y,visitboard):
+    queue = Queue()
+    queue.put((x,y))
+    points=0
+    whogetspoints=' ' #intially nobody
+    bordering_players = set()  # Stores 'X', 'O', or both
+    while not queue.empty():
+     x,y=queue.get()
+     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+     for dx, dy in directions:
+        nx, ny = x + dx, y + dy
+        if not is_out_of_bounds(board, nx, ny) and board[nx][ny] == ' ' and visitboard[nx][ny] == False:
+            if board[nx][ny] == ' ':
+             visitboard[nx][ny] = True
+             queue.put((nx,ny))
+             points += 1
+             pass
+            elif board[nx][ny] == 'X':
+                bordering_players.add('X')
+            elif board[nx][ny] == 'O':
+                bordering_players.add('O')
+
+    if len(bordering_players) == 1:
+        whogetspoints = bordering_players.pop()  # Only one color borders it
+    else:
+        whogetspoints = ' '  # Neutral (no stones, multiple colors, or edge)
+
+
+    return visitboard,points,whogetspoints
+
 
 
 
