@@ -18,5 +18,4 @@ COPY templates/ templates/
 ENV PORT=8080
 
 # Run with gunicorn (production server) instead of flask run
-CMD ["python", "Flasktest.py"]
-#CMD ["gunicorn", "--bind", "0.0.0.0:8080", "Flasktest:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "Flasktest:app"]
