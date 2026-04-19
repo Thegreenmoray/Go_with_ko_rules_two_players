@@ -30,6 +30,7 @@ def bfs(board,x,y,visitboard):
     queue = Queue()
     queue.put((x,y))
     points=1
+    visitboard[x][y]=True
     #whogetspoints=' ' #intially nobody
     bordering_players = set()  # Stores 'X', 'O', or both
     while not queue.empty():
