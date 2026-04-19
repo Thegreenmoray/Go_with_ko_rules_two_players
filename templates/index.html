@@ -5,15 +5,17 @@
 </head>
 <body>
 
-<p>This is a paragraph.</p>
 <div id="turn-indicator">Black's turn</div>
 <canvas id="go-board" width="520" height="520" style="background-color: #F0D095;"></canvas>
+<button id="Pass">Pass</button>
+<button id="Tally">Tally up points/End game</button>
 <script>
     const canvas = document.getElementById('go-board');
     const ctx = canvas.getContext('2d');
     const size = 19;  // 19x19 board
     const margin = 30;
     const cellSize = (canvas.width - 2 * margin) / (size - 1);
+
 
     // Draw grid lines
     function drawBoard() {
@@ -49,11 +51,86 @@ function updateTurn(nextPlayer) {
         currentPlayer === 'X' ? "Black's turn" : "White's turn";
 }
 
+function updateBoard(boardData) {
+    // Clear the entire canvas first
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Redraw the grid lines
+    drawBoard();  // Your existing function that draws lines and star points
+
+    // Loop through the board and draw all stones
+    for (let row = 0; row < boardData.length; row++) {
+        for (let col = 0; col < boardData[row].length; col++) {
+            if (boardData[row][col] === 'X') {
+                drawStone(row, col, 'X');
+            } else if (boardData[row][col] === 'O') {
+                drawStone(row, col, 'O');
+            }
+        }
+    }
+}
 
 
+let consecutivePasses = 0;  // Track consecutive passes
+let gameActive = true;       // Whether the game is still being played
+
+// Pass button handler
+document.getElementById('Pass').addEventListener('click', () => {
+    if (!gameActive) return;
+
+    consecutivePasses++;
+
+    if (consecutivePasses >= 2) {
+        // Game over - both players passed
+        gameActive = false;
+        document.getElementById('turn-indicator').textContent = "Game over! Click 'Tally points' to score.";
+    } else {
+        // Switch turns without placing a stone
+        currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+        updateTurn(currentPlayer);
+    }
+});
+
+// Tally button handler
+document.getElementById('Tally').addEventListener('click', () => {
+    if (gameActive) {
+        alert("Game isn't over yet! Both players must pass first.");
+        return;
+    }
+
+    // Fetch the score from Flask
+    fetch('/score', {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(`Black (X): ${data.black}\nWhite (O): ${data.white}\nNeutral: ${data.neutral}`);
+    });
+
+
+
+    fetch('/clearboard', {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateBoard(data.board)
+    });
+
+
+
+
+
+
+});
 drawBoard();
     // Handle clicks
+
+
     canvas.addEventListener('click', (e) => {
+       if (!gameActive) return;
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
@@ -73,8 +150,14 @@ drawBoard();
             })
             .then(response => response.json())
             .then(data => {
-                drawStone(row, col, currentPlayer);  // Draw stone
-                updateTurn(data.next_player);
+                if (data.waslegal) {
+                    consecutivePasses = 0;
+                     drawStone(row, col, currentPlayer);
+                     updateTurn(data.next_player);
+                     updateBoard(data.board);
+                      } else {
+                     alert("Illegal move!");
+}
             });
         }
     });
@@ -92,6 +175,8 @@ drawBoard();
         ctx.stroke();
     }
 </script>
+
+
 
 
 </body>

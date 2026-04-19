@@ -1,7 +1,22 @@
-FROM python:3.13.1
-LABEL authors="TheGreenMoray"
+FROM python:3.13.1-slim
+
 WORKDIR /app
 
-ADD *.py .
+# Copy requirements.txt first (better caching)
 
-CMD ["python","./testgo.py"]
+# Copy requirements.txt.txt FIRST (before copying all py files)
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy all Python files and templates
+COPY *.py .
+COPY templates/ templates/
+
+# Cloud Run expects the app to listen on $PORT (usually 8080)
+ENV PORT=8080
+
+# Run with gunicorn (production server) instead of flask run
+CMD ["python", "Flasktest.py"]
+#CMD ["gunicorn", "--bind", "0.0.0.0:8080", "Flasktest:app"]
