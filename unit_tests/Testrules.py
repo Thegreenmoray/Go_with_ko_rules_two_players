@@ -1,14 +1,11 @@
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import unittest
 
 import Go
 import Rules
-import Player
-import Actualgame
-import testgo
-import main
 
 
 class MyTestCase(unittest.TestCase):

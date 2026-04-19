@@ -11,11 +11,22 @@ board = Go.createboard(19)
 def home():
     return render_template("index.html")
 
-@app.route("/board",methods=['GET'])
+
+@app.route("/clearboard", methods=['PUT'])
+def clearboard():
+   global board
+   board = Go.createboard(19)
+   return jsonify({ 'board': board })
+
+
+
+@app.route("/score",methods=['GET'])
 def counterrtitory():
  global board
  black, white, netural = Rules.countterritory(board)
- return jsonify({ 'black': black, 'white': white, 'netural': netural })
+ white += 6.5 #komi: here to compensate white for going last and to break ties.
+
+ return jsonify({ 'black': black, 'white': white, 'neutral': netural })
 
 
 
@@ -36,6 +47,8 @@ def makemove():
 
 
 
-# Run the app locally
+
 if __name__ == "__main__":
-   app.run()
+    import os
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port)

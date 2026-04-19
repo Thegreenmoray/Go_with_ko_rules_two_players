@@ -63,8 +63,8 @@ def removestones(board, captured_positions):
         for row, col in captured_positions:
             board[row][col] = ' '
         return board
-#
-#test next
+
+#tested
 def rule_enforcement(board,x,y,playercolor,oppisttisecolor):
 
     global copyboard
