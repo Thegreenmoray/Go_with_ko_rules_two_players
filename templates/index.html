@@ -9,6 +9,7 @@
 <canvas id="go-board" width="520" height="520" style="background-color: #F0D095;"></canvas>
 <button id="Pass">Pass</button>
 <button id="Tally">Tally up points/End game</button>
+<button id="Playagain">Replay</button>
 <script>
     const canvas = document.getElementById('go-board');
     const ctx = canvas.getContext('2d');
@@ -75,6 +76,27 @@ let consecutivePasses = 0;  // Track consecutive passes
 let gameActive = true;       // Whether the game is still being played
 
 // Pass button handler
+document.getElementById('Playagain').addEventListener('click', () => {
+    // Don't require game to be stopped - reset should work anytime
+
+    fetch('/clearboard', {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateBoard(data.board);  // Redraw empty board
+        // Reset all game state
+        gameActive = true;
+        consecutivePasses = 0;
+        currentPlayer = 'X';  // Black goes first
+        updateTurn(currentPlayer);
+        document.getElementById('turn-indicator').textContent = "Black's turn";
+    });
+});
+
+
+// Pass button handler
 document.getElementById('Pass').addEventListener('click', () => {
     if (!gameActive) return;
 
@@ -90,6 +112,7 @@ document.getElementById('Pass').addEventListener('click', () => {
         updateTurn(currentPlayer);
     }
 });
+
 
 // Tally button handler
 document.getElementById('Tally').addEventListener('click', () => {
