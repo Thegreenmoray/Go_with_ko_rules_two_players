@@ -12,6 +12,7 @@ def home():
     return render_template("index.html")
 
 
+
 @app.route("/clearboard", methods=['PUT'])
 def clearboard():
    global board
