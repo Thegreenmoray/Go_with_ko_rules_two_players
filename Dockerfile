@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy all Python files and templates
-COPY *.py .
+COPY *.py ./
 COPY templates/ templates/
 
 # Cloud Run expects the app to listen on $PORT (usually 8080)
